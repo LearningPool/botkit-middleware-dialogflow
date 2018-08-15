@@ -17,6 +17,20 @@ module.exports = function(config) {
       return;
     }
 
+    // COREHACK - Add it in to support multiple bots
+    if (config.version === 'V2') {
+      if (!config.keyFilename.includes(bot.dialogflowKeyFileName)) {
+        next();
+        return;
+      }
+    } else {
+      if (bot.dialogflowToken !== config.token) {
+        next();
+        return;
+      }
+    }
+    // ENDCOREHACK
+
     for (const pattern of ignoreTypePatterns) {
       if (pattern.test(message.type)) {
         debug('skipping call to Dialogflow since type matched ', pattern);
